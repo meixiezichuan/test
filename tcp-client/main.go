@@ -45,7 +45,7 @@ func main() {
 	//reader := bufio.NewReader(conn)
 	for {
 		startTime := time.Now().UnixNano()
-		fmt.Println("clientTime:", startTime)
+		//fmt.Println("clientTime:", startTime)
 		mTime := strconv.FormatInt(startTime, 10) + "\n"
 		_, err = conn.Write([]byte(mTime))
 		if err != nil {

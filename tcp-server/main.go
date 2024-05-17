@@ -31,7 +31,7 @@ func handleClient(conn net.Conn, wg *sync.WaitGroup) {
 			fmt.Println("Error parsing timestamp:", err)
 			return
 		}
-		fmt.Println("clientTime:", clientTime, "now", now)
+		//fmt.Println("clientTime:", clientTime, "now", now)
 		dur := (now - clientTime) / 1000
 		// microsecond
 		fmt.Println("latency:", dur)
@@ -53,7 +53,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("Server listening on port 6666")
+	//fmt.Println("Server listening on port 6666")
 	var wg sync.WaitGroup
 	// Accept and handle incoming connections
 	go func() {
