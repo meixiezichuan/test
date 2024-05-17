@@ -56,16 +56,18 @@ func main() {
 	fmt.Println("Server listening on port 6666")
 	var wg sync.WaitGroup
 	// Accept and handle incoming connections
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Println("Error accepting connection:", err)
-			continue
+	go func() {
+		for {
+			conn, err := listener.Accept()
+			if err != nil {
+				fmt.Println("Error accepting connection:", err)
+				continue
+			}
+			//fmt.Println("Accepted connection from:", conn.RemoteAddr())
+			wg.Add(1)
+			go handleClient(conn, &wg) // Handle client connection concurrently
 		}
-		//fmt.Println("Accepted connection from:", conn.RemoteAddr())
-		wg.Add(1)
-		go handleClient(conn, &wg) // Handle client connection concurrently
-	}
+	}()
 	<-sigs
 	listener.Close()
 	wg.Wait()
