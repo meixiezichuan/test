@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strconv"
 	"sync"
 	"syscall"
 	"time"
@@ -23,15 +24,17 @@ func handleClient(conn net.Conn, wg *sync.WaitGroup) {
 			fmt.Println("Error reading:", err)
 			return
 		}
-		now := time.Now()
+		now := time.Now().UnixNano()
 		mtime := data[:len(data)-1]
-		clientTime, err := time.Parse(time.RFC3339, string(mtime))
+		clientTime, err := strconv.ParseInt(mtime, 10, 64)
 		if err != nil {
 			fmt.Println("Error parsing timestamp:", err)
 			return
 		}
-		dur := now.Sub(clientTime)
-		fmt.Println("latency:", dur.Milliseconds())
+		fmt.Println("clientTime:", clientTime, "now", now)
+		dur := (now - clientTime) / 1000
+		// microsecond
+		fmt.Println("latency:", dur)
 	}
 }
 
