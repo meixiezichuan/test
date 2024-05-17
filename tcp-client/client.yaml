@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+spec:
+  containers:
+  - name: client
+    image: meixie/test-server:v0.0.1
+    command: ["sleep", "9999999"]
