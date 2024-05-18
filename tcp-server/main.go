@@ -12,6 +12,8 @@ import (
 	"time"
 )
 
+var flag bool
+
 func handleClient(conn net.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
 	defer conn.Close()
@@ -24,17 +26,19 @@ func handleClient(conn net.Conn, wg *sync.WaitGroup) {
 			fmt.Println("Error reading:", err)
 			return
 		}
-		now := time.Now().UnixNano()
-		mtime := data[:len(data)-1]
-		clientTime, err := strconv.ParseInt(mtime, 10, 64)
-		if err != nil {
-			fmt.Println("Error parsing timestamp:", err)
-			return
+		if flag {
+			now := time.Now().UnixNano()
+			mtime := data[:len(data)-1]
+			clientTime, err := strconv.ParseInt(mtime, 10, 64)
+			if err != nil {
+				fmt.Println("Error parsing timestamp:", err)
+				return
+			}
+			//fmt.Println("clientTime:", clientTime, "now", now)
+			dur := (now - clientTime) / 1000
+			// microsecond
+			fmt.Println("latency:", dur)
 		}
-		//fmt.Println("clientTime:", clientTime, "now", now)
-		dur := (now - clientTime) / 1000
-		// microsecond
-		fmt.Println("latency:", dur)
 	}
 }
 
@@ -74,6 +78,7 @@ func main() {
 			wg.Add(1)
 			count++
 			if count == tc {
+				flag = true
 				fmt.Println("Accpet all connection:", tc)
 			}
 			go handleClient(conn, &wg) // Handle client connection concurrently
