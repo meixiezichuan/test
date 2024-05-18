@@ -55,6 +55,13 @@ func main() {
 
 	//fmt.Println("Server listening on port 6666")
 	var wg sync.WaitGroup
+	count := 0
+	tc := 10000
+	total := os.Getenv("TOTAL")
+	tc, err = strconv.Atoi(total)
+	if err != nil {
+		fmt.Println("Error get TOTAL:", err)
+	}
 	// Accept and handle incoming connections
 	go func() {
 		for {
@@ -65,6 +72,10 @@ func main() {
 			}
 			//fmt.Println("Accepted connection from:", conn.RemoteAddr())
 			wg.Add(1)
+			count++
+			if count == tc {
+				fmt.Println("Accpet all connection:", tc)
+			}
 			go handleClient(conn, &wg) // Handle client connection concurrently
 		}
 	}()
