@@ -1,12 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"math/rand"
 	"net"
 	"os"
-	"strconv"
-	"time"
 )
 
 func randomInRange(min, max int) int {
@@ -43,17 +42,18 @@ func main() {
 	defer conn.Close()
 
 	// Read response from server
-	//reader := bufio.NewReader(conn)
-	for i := 0; i < 30000; i++ {
-		startTime := time.Now().UnixNano()
-		//fmt.Println("clientTime:", startTime)
-		mTime := strconv.FormatInt(startTime, 10) + "\n"
-		_, err = conn.Write([]byte(mTime))
+	reader := bufio.NewReader(conn)
+	for {
+		data, err := reader.ReadBytes('\n')
+		if err != nil {
+			fmt.Println("Error reading:", err)
+			return
+		}
+		_, err = conn.Write(data)
 		if err != nil {
 			fmt.Println("Error sending data:", err)
 			return
 		}
-		time.Sleep(10 * time.Millisecond)
 	}
 
 }
